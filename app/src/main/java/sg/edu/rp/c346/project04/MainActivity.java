@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
         btnViewInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getBaseContext(), ViewInventory.class);
+                startActivity(intent);
             }
         });
     }
