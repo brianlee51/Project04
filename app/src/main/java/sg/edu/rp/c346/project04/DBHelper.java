@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "inventory.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     //Table Part Type (Stores info like bricks, slopes, wheel etc)
     private static final String TABLE_PART_TYPE = "part_type";
@@ -96,7 +96,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void insertColor(String color){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_COLOR_NAME, color);
+        values.put(COLUMN_COLOR_NAME, color.toUpperCase());
         db.insert(TABLE_COLOR, null, values);
         db.close();
     }
@@ -104,7 +104,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void insertPart(String partName) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_PART_NAME, partName);
+        values.put(COLUMN_PART_NAME, partName.toUpperCase());
         db.insert(TABLE_PART_TYPE, null, values);
         db.close();
     }
@@ -112,7 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void insertArea(String area) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_STUD_NAME, area);
+        values.put(COLUMN_STUD_NAME, area.toUpperCase());
         db.insert(TABLE_STUD_AREA, null, values);
         db.close();
     }
@@ -120,7 +120,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean dbContainColor(String color) {
         String selectQuery = "SELECT " + COLUMN_COLOR_NAME
                 + " FROM " + TABLE_COLOR
-                + " WHERE " + COLUMN_COLOR_NAME + " == '" + color + "'";
+                + " WHERE " + COLUMN_COLOR_NAME + " == '" + color.toUpperCase() + "'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -138,7 +138,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean dbContainPartName(String partName) {
         String selectQuery = "SELECT " + COLUMN_PART_NAME
                 + " FROM " + TABLE_PART_TYPE
-                + " WHERE " + COLUMN_PART_NAME + " == '" + partName + "'";
+                + " WHERE " + COLUMN_PART_NAME + " == '" + partName.toUpperCase() + "'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -156,7 +156,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean dbContainsArea(String area) {
         String selectQuery = "SELECT " + COLUMN_STUD_NAME
                 + " FROM " + TABLE_STUD_AREA
-                + " WHERE " + COLUMN_STUD_NAME + " == '" + area + "'";
+                + " WHERE " + COLUMN_STUD_NAME + " == '" + area.toUpperCase() + "'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -189,6 +189,72 @@ public class DBHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    public int getPartID(String partName) {
+        String selectQuery = "SELECT " + COLUMN_PART_TYPE_ID
+                + " FROM " + TABLE_PART_TYPE
+                + " WHERE " + COLUMN_PART_NAME + " == '" + partName + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int id = 0;
+        if (cursor.moveToFirst()) {
+            do {
+                id = cursor.getInt(0);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return id;
+    }
+
+    public int getStudID(String studName) {
+        String selectQuery = "SELECT " + COLUMN_STUD_ID
+                + " FROM " + TABLE_STUD_AREA
+                + " WHERE " + COLUMN_STUD_NAME + " == '" + studName + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int id = 0;
+        if (cursor.moveToFirst()) {
+            do {
+                id = cursor.getInt(0);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return id;
+    }
+
+    public int getTotalUniqueParts() {
+        String selectQuery = "SELECT *"
+                + " FROM " + TABLE_PART_LIST;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public int getTotalAmount() {
+        String selectQuery = "SELECT " + COLUMN_ITEM_QUANTITY
+                + " FROM " + TABLE_PART_LIST;
+
+        int total = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int item = cursor.getInt(0);
+                total += item;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return total;
+    }
+
     public ArrayList<String> getColorName() {
         ArrayList<String> colors = new ArrayList<String>();
         String selectQuery = "SELECT " + COLUMN_COLOR_NAME
@@ -210,7 +276,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<String> getPartName() {
         ArrayList<String> partName = new ArrayList<String>();
         String selectQuery = "SELECT " + COLUMN_PART_NAME
-                + " FROM " + TABLE_PART_TYPE;
+                + " FROM " + TABLE_PART_TYPE
+                + " ORDER BY " + COLUMN_PART_NAME + " ASC";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -227,7 +294,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<String> getArea() {
         ArrayList<String> area = new ArrayList<String>();
         String selectQuery = "SELECT " + COLUMN_STUD_NAME
-                + " FROM " + TABLE_STUD_AREA;
+                + " FROM " + TABLE_STUD_AREA
+                + " ORDER BY " + COLUMN_STUD_NAME + " ASC";
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {

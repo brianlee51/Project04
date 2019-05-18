@@ -11,7 +11,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     Button btnViewInventory, btnAddItem;
-    TextView tvTotal;
+    TextView tvTotal, tvUnique;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,13 @@ public class MainActivity extends AppCompatActivity {
         btnViewInventory = findViewById(R.id.buttonViewInventory);
         // To populate from DB
         tvTotal = findViewById(R.id.textViewTotal);
+        tvUnique = findViewById(R.id.textViewUnique);
+
+        DBHelper db = new DBHelper(MainActivity.this);
+        int uniqueParts = db.getTotalUniqueParts();
+        int totalParts = db.getTotalAmount();
+        tvUnique.setText(uniqueParts+"");
+        tvTotal.setText(totalParts+"");
 
         // To go to add parts page
         btnAddItem.setOnClickListener(new View.OnClickListener() {

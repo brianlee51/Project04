@@ -106,15 +106,16 @@ public class AddPart extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Item quantity cannot be empty!", Toast.LENGTH_LONG).show();
                 } else if (itemLocation.length() == 0) {
                     Toast.makeText(getBaseContext(), "Put N.A if you do not have a specified location to store item!", Toast.LENGTH_LONG).show();
+                } else if (spnColor.getSelectedItem() == null || spnPart.getSelectedItem() == null || spnArea.getSelectedItem() == null){
+                    Toast.makeText(getBaseContext(), "Please add in attributes!", Toast.LENGTH_LONG).show();
                 } else {
                     int quantityInInt = Integer.parseInt(quantity);
-                    //int colorSelectedPos = spnColor.getSelectedItemPosition();
                     String colorName = spnColor.getSelectedItem().toString();
-                    int studSelectedPos = spnArea.getSelectedItemPosition();
-                    int partSelectedPos = spnPart.getSelectedItemPosition();
+                    String partName = spnPart.getSelectedItem().toString();
+                    String studName = spnArea.getSelectedItem().toString();
                     int actualToBeInsertedColorPos = db.getColorID(colorName);
-                    int actualToBeInsertedStudPos = studSelectedPos + 1;
-                    int actualToBeInsertedPartPos = partSelectedPos + 1;
+                    int actualToBeInsertedStudPos = db.getStudID(studName);
+                    int actualToBeInsertedPartPos = db.getPartID(partName);
                     db.insertItem(quantityInInt, itemLocation, actualToBeInsertedPartPos, actualToBeInsertedColorPos, actualToBeInsertedStudPos);
                     db.close();
                     Toast.makeText(getBaseContext(), "Item successfully inserted!", Toast.LENGTH_LONG).show();
