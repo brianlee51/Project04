@@ -1,6 +1,8 @@
 package sg.edu.rp.c346.project04;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -113,17 +115,21 @@ public class AddPart extends AppCompatActivity {
                     String colorName = spnColor.getSelectedItem().toString();
                     String partName = spnPart.getSelectedItem().toString();
                     String studName = spnArea.getSelectedItem().toString();
-                    int actualToBeInsertedColorPos = db.getColorID(colorName);
-                    int actualToBeInsertedStudPos = db.getStudID(studName);
-                    int actualToBeInsertedPartPos = db.getPartID(partName);
-                    db.insertItem(quantityInInt, itemLocation, actualToBeInsertedPartPos, actualToBeInsertedColorPos, actualToBeInsertedStudPos);
-                    db.close();
-                    Toast.makeText(getBaseContext(), "Item successfully inserted!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    startActivity(intent);
+                    boolean status = db.dbContainsDuplicate(colorName, partName, studName);
+                    if (status == true) {
+                        Toast.makeText(getBaseContext(), "This part already exist in the current database!", Toast.LENGTH_LONG).show();
+                    } else {
+                        int actualToBeInsertedColorPos = db.getColorID(colorName);
+                        int actualToBeInsertedStudPos = db.getStudID(studName);
+                        int actualToBeInsertedPartPos = db.getPartID(partName);
+                        db.insertItem(quantityInInt, itemLocation, actualToBeInsertedPartPos, actualToBeInsertedColorPos, actualToBeInsertedStudPos);
+                        db.close();
+                        Toast.makeText(getBaseContext(), "Item successfully inserted!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                        startActivity(intent);
+                    }
                 }
             }
         });
-
     }
 }

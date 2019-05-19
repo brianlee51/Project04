@@ -171,6 +171,34 @@ public class DBHelper extends SQLiteOpenHelper {
         return isInDB;
     }
 
+    public boolean dbContainsDuplicate(String colorName, String partName, String studName) {
+        String selectQuery = "SELECT " + COLUMN_PART_LIST_ID + ", "
+                + COLUMN_ITEM_QUANTITY + ", "
+                + COLUMN_STORAGE_LOCATION + ", "
+                + COLUMN_PART_NAME + ", "
+                + COLUMN_COLOR_NAME + ", "
+                + COLUMN_STUD_NAME
+                + " FROM " + TABLE_PART_LIST + ", " + TABLE_PART_TYPE + ", " +  TABLE_COLOR + ", " + TABLE_STUD_AREA
+                + " WHERE " + COLUMN_FK_STUD_ID + " = " + COLUMN_STUD_ID
+                + " AND " + COLUMN_FK_PART_ID + " = " + COLUMN_PART_TYPE_ID
+                + " AND " + COLUMN_FK_COLOR_ID + " = " + COLUMN_COLOR_ID
+                + " AND " + COLUMN_PART_NAME + " == '" + partName.toUpperCase() + "'"
+                + " AND " + COLUMN_STUD_NAME + " == '" + studName.toUpperCase() + "'"
+                + " AND " + COLUMN_COLOR_NAME + " == '" + colorName.toUpperCase() + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        boolean isInDB = false;
+        cursor.close();
+        db.close();
+        if (count > 0) {
+            isInDB = true;
+        }
+
+        return isInDB;
+    }
+
     public int getColorID(String colorName) {
         String selectQuery = "SELECT " + COLUMN_COLOR_ID
                 + " FROM " + TABLE_COLOR
