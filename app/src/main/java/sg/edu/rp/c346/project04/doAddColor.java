@@ -1,6 +1,8 @@
 package sg.edu.rp.c346.project04;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +41,36 @@ public class doAddColor extends AppCompatActivity {
                     Toast.makeText(doAddColor.this, "Data Inserted", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getBaseContext(), AddPart.class);
                     startActivity(intent);
+                }
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String color = etColor.getText().toString();
+                color = color.toUpperCase();
+                DBHelper db = new DBHelper(doAddColor.this);
+                boolean colorInExistingPartList = db.colorInPartsList(color);
+                boolean dbColorContainsColor = db.dbContainColor(color);
+                if (colorInExistingPartList) {
+                    Toast.makeText(getBaseContext(),"You cant delete " + color + " because an existing entity is using it!",
+                            Toast.LENGTH_LONG).show();
+                } else if (color.length() == 0){
+                    Toast.makeText(getBaseContext(),"Please enter a color!", Toast.LENGTH_LONG).show();
+                } else if (dbColorContainsColor == false) {
+                    Toast.makeText(getBaseContext(),"No such color in current color list", Toast.LENGTH_LONG).show();
+                } else {
+                    boolean deleted = db.deleteColor(color);
+                    if (deleted == true) {
+                        Toast.makeText(getBaseContext(), "You have successfully deleted " + color + " from the list",
+                                Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getBaseContext(), AddPart.class);
+                        startActivity(intent);
+                    } else {
+                        // By right, this statement will never appear for user's viewing pleasure
+                        Toast.makeText(getBaseContext(), "Deletion failed", Toast.LENGTH_LONG);
+                    }
                 }
             }
         });

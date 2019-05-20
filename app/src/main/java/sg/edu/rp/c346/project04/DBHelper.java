@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "inventory.db";
+    // DO NOT DOWNGRADE, OTHERWISE CANNOT WORK
     private static final int DATABASE_VERSION = 4;
 
     //Table Part Type (Stores info like bricks, slopes, wheel etc)
@@ -115,6 +116,54 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(COLUMN_STUD_NAME, area.toUpperCase());
         db.insert(TABLE_STUD_AREA, null, values);
         db.close();
+    }
+
+    public boolean deleteColor(String color) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "DELETE FROM " + TABLE_COLOR
+                + " WHERE " + COLUMN_COLOR_NAME +" == '" + color + "'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        boolean dataDeleted = false;
+        if (count == 0) {
+            dataDeleted = true;
+        }
+
+        return dataDeleted;
+    }
+
+    public boolean deletePart(String partName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "DELETE FROM " + TABLE_PART_TYPE
+                + " WHERE " + COLUMN_PART_NAME +" == '" + partName + "'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        boolean dataDeleted = false;
+        if (count == 0) {
+            dataDeleted = true;
+        }
+
+        return dataDeleted;
+    }
+
+    public boolean deleteStud (String studName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "DELETE FROM " + TABLE_STUD_AREA
+                + " WHERE " + COLUMN_STUD_NAME +" == '" + studName + "'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        boolean dataDeleted = false;
+        if (count == 0) {
+            dataDeleted = true;
+        }
+
+        return dataDeleted;
     }
 
     public boolean dbContainColor(String color) {
@@ -475,5 +524,59 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return items;
+    }
+
+    public boolean colorInPartsList(String color) {
+        String selectQuery = "SELECT " + COLUMN_COLOR_NAME
+                + " FROM " + TABLE_PART_LIST + ", " + TABLE_COLOR
+                + " WHERE " + COLUMN_COLOR_NAME + " == '" + color.toUpperCase()  + "'"
+                + " AND " + COLUMN_FK_COLOR_ID + " = " + COLUMN_COLOR_ID;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        boolean colorIsInPartsList = false;
+        if (count > 0) {
+            colorIsInPartsList = true;
+        }
+        return colorIsInPartsList;
+    }
+
+    public boolean partInPartsList(String partName) {
+        String selectQuery = "SELECT " + COLUMN_PART_NAME
+                + " FROM " + TABLE_PART_LIST + ", " + TABLE_PART_TYPE
+                + " WHERE " + COLUMN_PART_NAME + " == '" + partName.toUpperCase()  + "'"
+                + " AND " + COLUMN_FK_PART_ID + " = " + COLUMN_PART_TYPE_ID;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        boolean partIsInPartsList = false;
+        if (count > 0) {
+            partIsInPartsList = true;
+        }
+        return partIsInPartsList;
+    }
+
+    public boolean studInStudsList(String studName) {
+        String selectQuery = "SELECT " + COLUMN_STUD_NAME
+                + " FROM " + TABLE_PART_LIST + ", " + TABLE_STUD_AREA
+                + " WHERE " + COLUMN_STUD_NAME + " == '" + studName.toUpperCase()  + "'"
+                + " AND " + COLUMN_FK_STUD_ID + " = " + COLUMN_STUD_ID;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        boolean studIsInPartsList = false;
+        if (count > 0) {
+            studIsInPartsList = true;
+        }
+        return studIsInPartsList;
     }
 }

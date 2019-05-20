@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
-            android:text="Add New Part"
+            android:text="Add / Delete Part"
             android:textSize="18sp" />
 
     </LinearLayout>
