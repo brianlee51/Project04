@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViewInventory"></activity>
+        <activity android:name=".displaySearchResults"></activity>
+        <activity android:name=".ViewInventory" />
         <activity android:name=".doAddArea" />
         <activity android:name=".doAddPart" />
         <activity android:name=".doAddColor" />

@@ -349,7 +349,113 @@ public class DBHelper extends SQLiteOpenHelper {
                 + " FROM " + TABLE_PART_LIST + ", " + TABLE_PART_TYPE + ", " +  TABLE_COLOR + ", " + TABLE_STUD_AREA
                 + " WHERE " + COLUMN_FK_STUD_ID + " = " + COLUMN_STUD_ID
                 + " AND " + COLUMN_FK_PART_ID + " = " + COLUMN_PART_TYPE_ID
-                + " AND " + COLUMN_FK_COLOR_ID + " = " + COLUMN_COLOR_ID;
+                + " AND " + COLUMN_FK_COLOR_ID + " = " + COLUMN_COLOR_ID
+                + " ORDER BY " + COLUMN_COLOR_NAME + " ASC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                int quantity = cursor.getInt(1);
+                String location = cursor.getString(2);
+                String partName = cursor.getString(3);
+                String colorName = cursor.getString(4);
+                String studName = cursor.getString(5);
+                Item obj = new Item(id, quantity, location, partName, colorName, studName);
+                items.add(obj);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return items;
+    }
+
+    public ArrayList<Item> getQueriedItemsByPart(String keyword) {
+        ArrayList<Item> items = new ArrayList<Item>();
+        String selectQuery = "SELECT " + COLUMN_PART_LIST_ID + ", "
+                + COLUMN_ITEM_QUANTITY + ", "
+                + COLUMN_STORAGE_LOCATION + ", "
+                + COLUMN_PART_NAME + ", "
+                + COLUMN_COLOR_NAME + ", "
+                + COLUMN_STUD_NAME
+                + " FROM " + TABLE_PART_LIST + ", " + TABLE_PART_TYPE + ", " +  TABLE_COLOR + ", " + TABLE_STUD_AREA
+                + " WHERE " + COLUMN_PART_NAME + " == '" + keyword.toUpperCase()  + "'"
+                + " AND " + COLUMN_FK_STUD_ID + " = " + COLUMN_STUD_ID
+                + " AND " + COLUMN_FK_PART_ID + " = " + COLUMN_PART_TYPE_ID
+                + " AND " + COLUMN_FK_COLOR_ID + " = " + COLUMN_COLOR_ID
+                + " ORDER BY " + COLUMN_COLOR_NAME + " ASC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                int quantity = cursor.getInt(1);
+                String location = cursor.getString(2);
+                String partName = cursor.getString(3);
+                String colorName = cursor.getString(4);
+                String studName = cursor.getString(5);
+                Item obj = new Item(id, quantity, location, partName, colorName, studName);
+                items.add(obj);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return items;
+    }
+
+    public ArrayList<Item> getQueriedItemsByStud(String keyword) {
+        ArrayList<Item> items = new ArrayList<Item>();
+        String selectQuery = "SELECT " + COLUMN_PART_LIST_ID + ", "
+                + COLUMN_ITEM_QUANTITY + ", "
+                + COLUMN_STORAGE_LOCATION + ", "
+                + COLUMN_PART_NAME + ", "
+                + COLUMN_COLOR_NAME + ", "
+                + COLUMN_STUD_NAME
+                + " FROM " + TABLE_PART_LIST + ", " + TABLE_PART_TYPE + ", " +  TABLE_COLOR + ", " + TABLE_STUD_AREA
+                + " WHERE " + COLUMN_STUD_NAME + " == '" + keyword.toUpperCase()  + "'"
+                + " AND " + COLUMN_FK_STUD_ID + " = " + COLUMN_STUD_ID
+                + " AND " + COLUMN_FK_PART_ID + " = " + COLUMN_PART_TYPE_ID
+                + " AND " + COLUMN_FK_COLOR_ID + " = " + COLUMN_COLOR_ID
+                + " ORDER BY " + COLUMN_COLOR_NAME + " ASC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                int quantity = cursor.getInt(1);
+                String location = cursor.getString(2);
+                String partName = cursor.getString(3);
+                String colorName = cursor.getString(4);
+                String studName = cursor.getString(5);
+                Item obj = new Item(id, quantity, location, partName, colorName, studName);
+                items.add(obj);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return items;
+    }
+
+    public ArrayList<Item> getQueriedItemsByColor(String keyword) {
+        ArrayList<Item> items = new ArrayList<Item>();
+        String selectQuery = "SELECT " + COLUMN_PART_LIST_ID + ", "
+                + COLUMN_ITEM_QUANTITY + ", "
+                + COLUMN_STORAGE_LOCATION + ", "
+                + COLUMN_PART_NAME + ", "
+                + COLUMN_COLOR_NAME + ", "
+                + COLUMN_STUD_NAME
+                + " FROM " + TABLE_PART_LIST + ", " + TABLE_PART_TYPE + ", " +  TABLE_COLOR + ", " + TABLE_STUD_AREA
+                + " WHERE " + COLUMN_COLOR_NAME + " == '" + keyword.toUpperCase()  + "'"
+                + " AND " + COLUMN_FK_STUD_ID + " = " + COLUMN_STUD_ID
+                + " AND " + COLUMN_FK_PART_ID + " = " + COLUMN_PART_TYPE_ID
+                + " AND " + COLUMN_FK_COLOR_ID + " = " + COLUMN_COLOR_ID
+                + " ORDER BY " + COLUMN_COLOR_NAME + " ASC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
