@@ -134,6 +134,22 @@ public class DBHelper extends SQLiteOpenHelper {
         return dataDeleted;
     }
 
+    public boolean deleteItem(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "DELETE FROM " + TABLE_PART_LIST
+                + " WHERE " + COLUMN_PART_LIST_ID +" == " + id;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        boolean dataDeleted = false;
+        if (count == 0) {
+            dataDeleted = true;
+        }
+
+        return dataDeleted;
+    }
+
     public boolean deletePart(String partName) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "DELETE FROM " + TABLE_PART_TYPE
@@ -164,6 +180,15 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return dataDeleted;
+    }
+
+    public void updateItem (int id, int qty, String location) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ITEM_QUANTITY, qty);
+        values.put(COLUMN_STORAGE_LOCATION, location);
+        db.update(TABLE_PART_LIST, values, "part_list_id="+id,null);
+        db.close();
     }
 
     public boolean dbContainColor(String color) {

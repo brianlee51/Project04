@@ -63,6 +63,7 @@
         android:text="Unique parts"
         android:textAlignment="center"
         android:textColor="@android:color/black"
+        android:textSize="18sp"
         android:textStyle="italic" />
 
     <LinearLayout
