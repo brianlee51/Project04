@@ -17,8 +17,9 @@ import java.util.ArrayList;
 public class AddPart extends AppCompatActivity {
 
     Spinner spnColor, spnPart, spnArea;
-    Button btnEditColor, btnBack, btnInsert, btnEditPart, btnEditArea;
+    Button btnEditColor, btnInsert, btnEditPart, btnEditArea;
     EditText etQuantity, etLocation;
+    ArrayList<String> alColor, alPart, alArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,6 @@ public class AddPart extends AppCompatActivity {
 
         spnColor = findViewById(R.id.spinnerColor);
         btnEditColor = findViewById(R.id.buttonColor);
-        btnBack = findViewById(R.id.buttonBack);
         btnInsert = findViewById(R.id.buttonInsert);
         btnEditPart = findViewById(R.id.buttonEditPart);
         spnPart = findViewById(R.id.spinnerPart);
@@ -40,28 +40,34 @@ public class AddPart extends AppCompatActivity {
         DBHelper db = new DBHelper(AddPart.this);
 
         //For Populating color spinner
-        ArrayList<String> data = db.getColorName();
+        alColor = new ArrayList<>();
+        alColor.clear();
+        alColor.addAll(db.getColorName());
         db.close();
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, data);
+                android.R.layout.simple_spinner_item, alColor);
         dataAdapter.notifyDataSetChanged();
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnColor.setAdapter(dataAdapter);
 
         //For populating PART spinner
-        ArrayList<String> dataPart = db.getPartName();
+        alPart = new ArrayList<>();
+        alPart.clear();
+        alPart.addAll(db.getPartName());
         db.close();
         ArrayAdapter<String> dataAdapterForPart = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, dataPart);
+                android.R.layout.simple_spinner_item, alPart);
         dataAdapterForPart.notifyDataSetChanged();
         dataAdapterForPart.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnPart.setAdapter(dataAdapterForPart);
 
         //For populating Area spinner
-        ArrayList<String> area = db.getArea();
+        alArea = new ArrayList<>();
+        alArea.clear();
+        alArea.addAll(db.getArea());
         db.close();
         ArrayAdapter<String> dataAdapterForArea = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, area);
+                android.R.layout.simple_spinner_item, alArea);
         dataAdapterForArea.notifyDataSetChanged();
         dataAdapterForArea.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnArea.setAdapter(dataAdapterForArea);
@@ -70,7 +76,7 @@ public class AddPart extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), doAddColor.class);
-                startActivity(intent);
+                startActivityForResult(intent, 9);
             }
         });
 
@@ -78,7 +84,7 @@ public class AddPart extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), doAddPart.class);
-                startActivity(intent);
+                startActivityForResult(intent, 9);
             }
         });
 
@@ -86,15 +92,7 @@ public class AddPart extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), doAddArea.class);
-                startActivity(intent);
-            }
-        });
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 9);
             }
         });
 
@@ -125,11 +123,27 @@ public class AddPart extends AppCompatActivity {
                         db.insertItem(quantityInInt, itemLocation, actualToBeInsertedPartPos, actualToBeInsertedColorPos, actualToBeInsertedStudPos);
                         db.close();
                         Toast.makeText(getBaseContext(), "Item successfully inserted!", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                        startActivity(intent);
+                        Intent i = new Intent();
+                        setResult(RESULT_OK,i);
+                        finish();
                     }
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 9) {
+            DBHelper db = new DBHelper(AddPart.this);
+            alColor.clear();
+            alPart.clear();
+            alArea.clear();
+            alColor.addAll(db.getColorName());
+            alPart.addAll(db.getPartName());
+            alArea.addAll(db.getArea());
+        }
     }
 }

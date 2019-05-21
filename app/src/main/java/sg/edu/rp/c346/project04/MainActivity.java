@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Home Screen");
+        setTitle("LEGO Parts Inventory");
         btnAddItem = findViewById(R.id.buttonAddToInventory);
         btnViewInventory = findViewById(R.id.buttonViewInventory);
         // To populate from DB
@@ -27,15 +27,15 @@ public class MainActivity extends AppCompatActivity {
         DBHelper db = new DBHelper(MainActivity.this);
         int uniqueParts = db.getTotalUniqueParts();
         int totalParts = db.getTotalAmount();
-        tvUnique.setText(uniqueParts+"");
-        tvTotal.setText(totalParts+"");
+        tvUnique.setText(uniqueParts + "");
+        tvTotal.setText(totalParts + "");
 
         // To go to add parts page
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), AddPart.class);
-                startActivity(intent);
+                startActivityForResult(intent, 111);
             }
         });
 
@@ -47,5 +47,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        DBHelper db = new DBHelper(MainActivity.this);
+        tvUnique.setText(db.getTotalUniqueParts() + "");
+        tvTotal.setText(db.getTotalAmount() + "");
     }
 }

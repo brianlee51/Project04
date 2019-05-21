@@ -39,8 +39,9 @@ public class doAddColor extends AppCompatActivity {
                     db.insertColor(color);
                     db.close();
                     Toast.makeText(doAddColor.this, "Data Inserted", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getBaseContext(), AddPart.class);
-                    startActivity(intent);
+                    Intent i = new Intent();
+                    setResult(RESULT_OK,i);
+                    finish();
                 }
             }
         });
@@ -65,8 +66,9 @@ public class doAddColor extends AppCompatActivity {
                     if (deleted == true) {
                         Toast.makeText(getBaseContext(), "You have successfully deleted " + color + " from the list",
                                 Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getBaseContext(), AddPart.class);
-                        startActivity(intent);
+                        Intent i = new Intent();
+                        setResult(RESULT_OK,i);
+                        finish();
                     } else {
                         // By right, this statement will never appear for user's viewing pleasure
                         Toast.makeText(getBaseContext(), "Deletion failed", Toast.LENGTH_LONG);
